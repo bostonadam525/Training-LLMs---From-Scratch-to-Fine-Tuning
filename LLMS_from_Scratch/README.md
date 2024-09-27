@@ -1,4 +1,5 @@
 # LLMS from Scratch
+* Repo by Adam Lang
 * A repo devoted to all things related to building and training LLMs from scratch.
 
 ## Steps Involved
