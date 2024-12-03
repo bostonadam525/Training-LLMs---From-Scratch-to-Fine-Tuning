@@ -59,7 +59,24 @@
     * Zephyr
 
 
-## Breakdown of the Fine Tuning Process
+## Breakdown of the Finetuning Process
+* Data quality is the KEY during finetuning.
+* Here are the primary steps:
+ * 1) Data gathering and Preprocessing
+ * 2) Training
+ * 3) Evaluation
+* This process is iterative and repeated multiple times with finetuning the parameters and new data.
+
+
+### Pre-Training vs. Finetuning
+* This is again a very common debate and topic of discussion.
+* A major difference to remember:
+   * Pre-Training uses self-supervised learning — there is NO annotated or labeled data. 
+   * Finetuning uses Supervised learning WITH annotated and labeled data which is highly recommended. 
+Self-supervised learning is also supported.
+* Here is an excellent comparison of the 2 methods (source: Analytics Vidhya):
+![image](https://github.com/user-attachments/assets/7279f696-7013-4f1a-a54e-8be0d434b648)
+
 
 
 
