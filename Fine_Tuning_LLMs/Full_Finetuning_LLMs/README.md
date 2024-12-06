@@ -2,7 +2,13 @@
 * A repo devoted to full fine tuning of LLMs.
 
 
-## To run code in the notebook `instruction fine tuning` follow these steps:
+## `instruction fine tuning` Notebook Project Steps and Information
+* Info
+*  Project is full fine tuning of **TinyLlama/TinyLlama-1.1B-intermediate-step-1195k-token-2.5T**
+  * model card: https://huggingface.co/TinyLlama/TinyLlama-1.1B-intermediate-step-1195k-token-2.5T
+* Dataset used: **HuggingFaceH4/no_robots**
+  * dataset card: https://huggingface.co/datasets/HuggingFaceH4/no_robots
+
 * Recommend running on GPU on runpod
 1. Open Runpod instance
 2. Choose RTX A6000 instance from “secure cloud tab”
