@@ -23,3 +23,33 @@
   * log into huggingface hub using the command `Huggingface-cli login`
   * This will prompt you to enter your token
     * Make sure it has “write access” to push models to hub
+   
+
+
+# Limitations of full fine tuning
+
+1. Compute power
+ * Large models need 10s to 100s of GPUs for memory
+2. Storage
+ * 70B llama model as example, full precision requires 280GB of storage.
+ * Finetuned on 10 downstream tasks —> 2 TB storage needed!!!
+
+
+## What makes a model large?
+1. Number of parameters 
+2. Precision of the data type
+ * Example: Mistral-7B model with 7 billion parameters: 
+    * FP32 —> 28 GB
+    * FP16/BF16 —> ~15 GB
+    * INT8 —> ~7 GB
+    * INT4/NF4 —> ~3.5 GB
+
+
+## Why is full finetuning expeinse?
+Finetuning Mistral 7-B in mixed-precision using Adam Optimizer
+1) Weights —> 2 bytes / parameter
+2) Gradients —> 2 bytes / parameter
+3) Optimizer state
+4 byets / parameter (FP32 copy) + 8 bytes / parameter (momentum & variance estimates)
+4) Total Training cost —> 16 bytes/parameter * 7 billion parameters = 112 GB
+112GB doesnt even account for memory required for intermediate activations.
