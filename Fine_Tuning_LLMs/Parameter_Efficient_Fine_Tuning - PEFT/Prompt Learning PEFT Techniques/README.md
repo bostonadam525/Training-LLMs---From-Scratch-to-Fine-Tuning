@@ -51,3 +51,26 @@
    * Figure 1 from the original paper:
 
 ![image](https://github.com/user-attachments/assets/cf74d094-240e-4a54-a147-8ff4555a11bb)
+
+### Prefix Tuning Code Implementation
+```
+# 1. All Attention layers in the model are going to be replaced by the prefix tuning attention layer class below
+
+Class PrefixTuningAttentionLayer(torch.nn.Module):
+	def __init__(self, base_attention_layer, num_prompt_tokens, emb_dim, batch_size):
+		super().__init__()
+		self.base_attention_layer = base_attention_layer ## each original base Attention layer is the input
+		self.prompt_embedding = torch.nn.Embedding(num_prompt_tokens, emb_dim) ## prefix tuning “learnable params” during each Attention Layer
+		self.prompt_tokens = (torch.arange(num_prompt_tokens) ## generated prompt tokens from embeddings
+						.unsqueeze(0)
+						.repeat(batch_size, 1)
+						.long()
+
+# 2. Forward pass — get hidden_states from previous Attention Layer + related keyword arguments 
+	def forward(self, hidden_states, **kwargs):
+		# get soft prompt embeddings
+		soft_prompts = self.prompt_embeddings(self.prompt_tokens)
+		# prepend soft prompt embeddings to hidden states
+		hidden_states = torch.cat((soft_prompts, hidden_states), dim=1) ## here we concatenate soft_prompt_embeddings with hidden states along dimension 1
+		return self.base_attention_layer(hidden_states=hidden_states, **kwargs) ## finally we update the base_attention_layer
+```
