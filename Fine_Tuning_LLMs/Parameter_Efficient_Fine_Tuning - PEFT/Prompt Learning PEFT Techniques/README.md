@@ -74,3 +74,7 @@ Class PrefixTuningAttentionLayer(torch.nn.Module):
 		hidden_states = torch.cat((soft_prompts, hidden_states), dim=1) ## here we concatenate soft_prompt_embeddings with hidden states along dimension 1
 		return self.base_attention_layer(hidden_states=hidden_states, **kwargs) ## finally we update the base_attention_layer
 ```
+
+## Adaptation Prompt Tuning
+* Builds upon the concept of Prefix Tuning
+* Original arxiv paper: (LLaMA-Adapter: Efficient Fine-tuning of Language Models with Zero-init Attention)[https://arxiv.org/abs/2303.16199]
