@@ -78,3 +78,12 @@ Class PrefixTuningAttentionLayer(torch.nn.Module):
 ## Adaptation Prompt Tuning
 * Builds upon the concept of Prefix Tuning
 * Original arxiv paper: (LLaMA-Adapter: Efficient Fine-tuning of Language Models with Zero-init Attention)[https://arxiv.org/abs/2303.16199]
+* Figure from original paper illustrating the Zero Gating method:
+![image](https://github.com/user-attachments/assets/3fa6d8db-8222-43bc-8570-09d7e13e3b5f)
+ 
+* Key addition is the Zero Gating Layer.
+  * This Controls how much impact the soft prompt embeddings have on the attention layers.
+* Similar implementation to Prefix Tuning:
+  * Replace each of the base_attention_layers (original model attention layers) with prompt embeddings
+  * The new addition in this method is the “adaptation gate” or “Zero gating”  essentially controls the weight each of the prompt embeddings has on the base attention layers via the `torch.nn.Parameter(torch.zeros(1))`. 
+Other than the step above, the last step is the same where the prompt tokens are created from the prompt embeddings in each of the base attention layers from the soft prompts. 
