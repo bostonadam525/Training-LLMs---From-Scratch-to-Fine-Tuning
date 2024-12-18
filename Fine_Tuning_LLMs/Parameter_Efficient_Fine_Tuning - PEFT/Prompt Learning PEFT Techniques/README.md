@@ -1,6 +1,6 @@
 # Prompt Learning PEFT Techniques
 
-## Soft Prompt Based Methods for PEFT
+# Soft Prompt Based Methods for PEFT
 * This technique maps the problem of finding discrete hard prompt to a continuous soft prompt.
 
 1. Prompting in Zero and Few shots have shown remarkable performance.
@@ -30,3 +30,24 @@
       * c) We then perform back propagation and update the weights and gradients
           * This is done for each of the soft prompt input embeddings to optimize the fine tuning process. 
       * d) The most important thing to note here is there is **MINIMAL STORAGE —> total is 11GB as opposed to 44GB for the full fine tuning.**
+
+
+## Prefix Tuning - Another Soft Prompt Fine Tuning Method
+* The task here is taking the input which is a tuple of tokens from a knowledge base which **includes the relationship between entities.** 
+* Original arxiv paper: (Prefix-Tuning: Optimizing Continuous Prompts for Generation)[https://arxiv.org/abs/2101.00190]
+* Paper results
+   * Applying prefix-tuning to GPT-2 for table-to-text generation and to BART for summarization the authors found that by the LLM learning only 0.1% of parameters, prefix-tuning is able to obtain comparable performance in the full data setting. 
+   * This method also OUT PERFORMS fine-tuning in low-data or data sparsity settings.
+   * This method also extends well to unseend data during training or fine-tuning. 
+* **Example: Harry Potter + Hogwarts —> Education is the relationship between them.**
+   * You want to fine tune the model to generate the proper relationship between these tokens or entities.
+   * Example from original paper:
+ ![image](https://github.com/user-attachments/assets/f8ec1740-0ea0-40db-9e62-a32e46dae2f2)
+
+* **The difference between this and Prompt Tuning:**
+   * Here we are prepending soft prompt embeddings. 
+   * While this is similar to Prompt Tuning, however, here the prompt embeddings are in each of the ATTENTION layers of the model. 
+   * As an example, if GPT has 16 layers, then EACH LAYER has tunable layers to insert prompt embeddings.
+   * Figure 1 from the original paper:
+
+![image](https://github.com/user-attachments/assets/cf74d094-240e-4a54-a147-8ff4555a11bb)
