@@ -88,3 +88,79 @@
 4. Evaluate the LLM outputs
 
 
+
+# SageMaker Pipelines
+* A pipeline is a series of steps with a specific purpose.
+* A directed acyclic graph is automatically created (DAG).
+* Automatically manages and creates EC2 infrastructure.
+* Also available as Python SDK.
+* Fully integrated with SageMaker Studio UI.
+
+## Why do we even need a pipeline?
+1. Automatic step retry Step Caching
+2. Global Parameters
+3. Data lineage tracking and integration with S3 buckets for IO
+   * pipelines need data to be stored and feteched from S3.
+4. Containerization
+   * This forces us to containerize our data, results and workflow rather than keep them in a jupyter notebook.
+  
+5. Infrastructure provisioning support for spot-instances
+6. SageMaker Experiments Integration
+   * Automatically tracks hyperparameters, model artifacts, evaluation metadata, and other metrics.
+  
+
+
+## What are the pipeline steps that SageMaker Supports?
+
+### 1. **Processing Step**
+   * This is used to create a processing job specifically made for data processing.
+  
+  
+#### Use Case:
+      * For data pre and post processing
+      * For model evaluation after training
+      * Can also output files as evaluation reports
+    
+#### How Processing Works in pipelines
+      * Sagemaker will start processing job with an EC2 machine
+      * Takes the data from S3 bucket and copies it over EC2
+      * Runs the container with given script
+      * Copies the output artifacts back to S3
+      * De-provisions the EC2 machine
+    
+
+### 2. **Training Step**
+   * Used to create training job for training machine learning model(s).
+
+#### Use Cases of training step
+     * a. Train model with pre-built containers or use a custom container.
+     * b. Hyperparameter tuning can run models in parallel to speed-up training time and hyperparameter search. 
+     * c. Based on the tuning objective top 50 performing versions are retained.
+
+#### How model training works
+      * a. Sagemaker starts a job with EC2 machine(s).
+      * b. Takes the training and validation data from S3 and copies it over to EC2.
+      * c. Runs the container(s) with the given script.
+      * d. Tracks container logs.
+      * e. Tracks metrics using the container logs regex patterns --- specific patterns to track. 
+      * f. After training de-provisions the EC2 machines. 
+
+
+### 3. **Tuning Step**
+   * Used to create a hyperparameter tuning job for a given model or models.
+
+
+### 4. Model Inference Steps
+  * Creates a new model for the model registry.
+  * The model registry is a versioned system of managing models and has all the info needed to successfully retrieve/deploy the versioned model.
+
+#### Transform Step
+  * Used to batch run inference of a model on a given dataset.
+  * These are the actual steps:
+    1. Sagemaker starts a transform job with EC2 machines.
+    2. Takes the data from S3 and optionally splits into chunks.
+    3. Runs inference on the dataset.
+    4. Optionally will aggregate the data and store the output data to S3.
+    5. Afterwards de-provisions the EC2 machines. 
+  
+   
