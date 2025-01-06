@@ -1,10 +1,26 @@
 # LoRA and Other Common PEFT Variants
 
 
-## LoRA: Low-Rank Adaptation
-* Original arxiv paper by Hu et al: https://arxiv.org/abs/2106.09685
+# LoRA: Low-Rank Adaptation
+* Original arxiv paper by Hu et al in 2021: https://arxiv.org/abs/2106.09685
 
-### Why does LoRA work?
+
+## LoRA Overview
+* We know that for a 175B parameter model like (GPT-3), each parameter is in 32 or 16 bits or 2 bytes.
+* Thus, it takes around 350 GB memory to run or fine tune which is almost impossible on most computers. 
+* LoRA was proposed to solve this problem. 
+   * The concept is to take a large matrices and project it into low rank matrices. 
+   * So you take a 10x10 matrix —---into---> 10x1 and 1x10 matrices
+      * Then M1 x M2 —> 10 x W matrix
+      * 20 parameters result from decomposing large matrix (cross product is 20)
+
+* LoRA paper showed that it performs “on par or better” fine tuning models such as these below and with no inference latency. 
+   * RoBERTa
+   * DeBERTa
+   * GPT-2
+   * GPT-3
+
+## Why does LoRA work?
 * Pre-trained LLMs exhibit intrinsic low dimensions. 
 * Based on this, during fine tuning weight updates should be low rank matrices
 * Low rank matrices A and B are learned 
@@ -13,7 +29,7 @@
 ![image](https://github.com/user-attachments/assets/68a17e23-4710-4662-86d2-2a4ab9308cab)
 
 
-### During Inference there is NO ADDITIONAL LATENCY!
+## During Inference there is NO ADDITIONAL LATENCY!
 * During training:
   * Step 1: Train adapters adapted on your task. 
   * Step 2: Merge adapter weights inside the base model and use it as a standalone model. 
@@ -44,4 +60,40 @@
 * Gradients: 2 bytes/parameter
 * Optimizer state: 4 bytes/paramaeter (FP32 copy) + 8 bytes/parameter (momentum & variance estimates)
 * Total training cost: 16 bytes/parameter * 7 billion parameters * 0.0029 + 14 = 112 * 0.00296 + 14 GB ~14.4 GB
+
+
+# QLoRA
+* QLoRA - Efficient Finetuning of Quantized LLMs
+* Dettmers et al original paper in 2023: https://arxiv.org/abs/2305.14314
+* Technique is the same as LoRA except adding Quantization.
+   * Quantize the weights of a LoRA model. 
+* As an example, GPT-3 is 175B parameters —> 2 bytes
+   * LoRA
+   * QLoRA 
+
+## QLoRA with Phi-3 LLM as an example
+* Phi-3 has 3.8B parameters or about 4B parameters. 
+* Using LoRA —> 4B weights —> 16 bit format —>  8GB memory to load
+* Less memory means you can fine-tune locally for less time and less cost. 
+* QLoRA can represent this model in 2 different formats
+
+1. 8 bit format
+   * 4B x 1 byte —> 4 GB memory
+
+2. 4 bit format
+   * 4B x 0.5 byte —> 2 GB memory
+
+
+## QLoRA Quantization techniques proposed
+1. 4-bit NormalFloat (NF4) —> optimized for normally distributed weights.
+
+2. Double Quantization —> reduces overall memory footprint
+
+3. Paged Optimizers —> manage memory spikes in training process
+   * Gradient accumulation in forward and backward pass memory spikes occur.
+   * These are distributed across CPU memory to handle this better.
+   * As we can see from the original arxiv paper below:
+  
+ ![image](https://github.com/user-attachments/assets/f564b3cc-0d9c-4ab2-89c1-ceb931775b17)
+
 
