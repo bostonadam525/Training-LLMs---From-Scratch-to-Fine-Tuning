@@ -41,7 +41,7 @@
 1. **Soft Prompting Approaches**
   * Prompt Tuning
   * Prefix Tuning
-  * Adaptation Prompt (Additive fine-tuning or Adapters)
+  * Adaptation Prompt 
 
 2. **LoRA (and its variants) — most popular**
   * The overall concept is to reaparameterize the model into low rank matrices (also known as Reparameterization). 
