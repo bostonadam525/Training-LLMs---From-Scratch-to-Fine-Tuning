@@ -84,6 +84,25 @@
    * 4B x 0.5 byte —> 2 GB memory
 
 
+* Remember, that quantization reduces the precision of the numbers (weights) in our model. 
+  * Instead of using 32 bits to represent a number, we use 8 bits or even 4 bits. 
+  * **This dramatically cuts down the memory usage.**
+* Think of this as "Elephant sizes" as described by this [awesome blog post](https://medium.com/@shikharstruck/shrinking-elephants-a-funny-guide-to-4-bit-and-8-bit-quantization-for-llms-with-lora-ddf9f1a62070)
+
+
+1. 32-bit Float (Full-Size Elephant)
+  * High precision
+  * large size
+
+2. 8-bit Quantization (Smaller Elephant)
+  * Reduced precision
+  * smaller size
+
+3. 4-bit Quantization (Tiny Elephant)
+  * Even less precision
+  * tiniest size!
+
+
 ## QLoRA Quantization techniques proposed
 1. 4-bit NormalFloat (NF4) —> optimized for normally distributed weights.
 
