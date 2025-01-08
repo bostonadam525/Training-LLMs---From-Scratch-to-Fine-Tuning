@@ -104,11 +104,26 @@
 
 
 ## QLoRA Quantization techniques proposed
-1. 4-bit NormalFloat (NF4) —> optimized for normally distributed weights.
+1. **4-bit NormalFloat (NF4)**
+   * **optimized for normally distributed weights.**
+   * *Existing post-training quantization (PTQ) solutions are primarily integer-based and struggle with bit widths below 8 bits. Compared to integer quantization, floating-point (FP) quantization is more flexible and can better handle long-tail or bell-shaped distributions, and it has emerged as a default choice in many hardware platforms.*
+   * From the original paper: [LLM-FP4: 4-Bit Floating-Point Quantized Transformers](https://arxiv.org/abs/2310.16836)
+   * Pre-trained neural network weights are usually normally distributed and centered around zero.
+       * So, here is a very high probability of values occurring closer to zero rather than around -1 or plus 1.
+       * However, standard quantization to int4 is not aware of this fact.
+       * Thus it goes by the assumption that each of the 16 bins has an equal probability of getting the values.
+       * NF4 considers the normal distribution of neural network weights.
+         * This is what QLoRA does and it names it `k-bit NormalFloat`.
+         * **In NormalFloat, the bins are weighted by the normal distribution and hence the spacing between two quantization values are far apart near the extremes of -1 or 1 but are closer together as we get closer to 0. Thus we need to account for the long tails with FP or floating point quantization.** [source](https://www.ai-bites.net/qlora-train-your-llms-on-a-single-gpu/)
+  
+![image](https://github.com/user-attachments/assets/aa46c8f8-753b-4d20-91f3-c0b57227fb73)
 
-2. Double Quantization —> reduces overall memory footprint
 
-3. Paged Optimizers —> manage memory spikes in training process
+2. **Double Quantization**
+   * reduces overall memory footprint
+
+3. **Paged Optimizers**
+   * **manages memory spikes in training process**
    * Gradient accumulation in forward and backward pass memory spikes occur.
    * These are distributed across CPU memory to handle this better.
    * As we can see from the original arxiv paper below:
