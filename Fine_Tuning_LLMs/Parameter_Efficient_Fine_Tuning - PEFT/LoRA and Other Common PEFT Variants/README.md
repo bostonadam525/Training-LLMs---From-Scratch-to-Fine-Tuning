@@ -19,6 +19,12 @@
    * DeBERTa
    * GPT-2
    * GPT-3
+ 
+## LoRA Mathematical Deep Dive
+* I made this diagram with a deep dive into the low rank decomposition methods of LoRA and how it works.
+
+![image](https://github.com/user-attachments/assets/cfc0684a-f2b4-49e1-a112-44d041bf347d)
+
 
 ## Why does LoRA work?
 * Pre-trained LLMs exhibit intrinsic low dimensions. 
