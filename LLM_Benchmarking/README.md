@@ -6,6 +6,7 @@
 * This is the original paper: https://arxiv.org/abs/2406.19314
 * Livebench Leaderboard: [https://livebench.ai/#/](https://livebench.ai/#/)
 * Livebench github: https://github.com/livebench/livebench
+* Vellum LLM Leaderboard: https://www.vellum.ai/llm-leaderboard
 
 # Benchmarks for LLMs
 1. **GPQA (Google Proof Q+A)**
