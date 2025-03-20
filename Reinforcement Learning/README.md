@@ -30,7 +30,7 @@
 Prompt or Instruction —> Gold-Standard Response —> Optimized LLM model
 ```
 
-## 2. Reinforcement Learnng from Human Feedback (RLHF)
+## 2. Reinforcement Learning from Human Feedback (RLHF)
 * Supervision comes from a **reward model**. 
   * Algorithms such as PPO adjust policy (LLM weights) to **maximize the expected reward**. 
 * Why is this needed?
