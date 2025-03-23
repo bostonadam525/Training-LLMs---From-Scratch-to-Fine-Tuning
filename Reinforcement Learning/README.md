@@ -11,7 +11,9 @@
 
 
 # Overview of Post-Training LLM Reinforcement Learning and Optimization Techniques
-* The chart below is from a recent Medium article published in March 2025 by GoPenAI and gives us a great overview of specific models that were trained with some of these techniques, [source](https://blog.gopenai.com/unlocking-the-potential-a-comprehensive-survey-on-post-training-techniques-for-large-language-2243566b560f)
+* The chart below is from the arxiv paper published in February 20205 entitled "LLM Post-Training: A Deep Dive into Reasoning Large Language Models" by Kumar et al. [Link to paper](https://arxiv.org/html/2502.21321)
+*  The chart gives us a great overview of specific models that were trained with some of these techniques. As the authors state, it is "a taxonomy of post-training approaches for LLMs (LLMs), categorized into Fine-tuning, Reinforcement Learning, and Test-time Scaling methods. We summarize the key techniques used in recent LLM models, such as GPT-4, LLaMA 3.3, and Deepseek R1."
+*  Repo related to the chart and paper is [here](https://github.com/mbzuai-oryx/Awesome-LLM-Post-training)
 
 ![image](https://github.com/user-attachments/assets/90eeaf8f-534d-4789-ba7f-17e14c1b9af3)
 
