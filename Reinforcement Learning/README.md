@@ -8,6 +8,18 @@
   5.  ORPO (Odds-Ratio Preference Optimization)
  
 
+# When do you use Supervised Fine Tuning (SFT) vs. Reinforcement Fine Tuning (RFT)?
+* This chart and information below is from [Daily Dose of Data Science](https://www.dailydoseofds.com/)
+* The process of Reinforcement Fine-tuning (RFT) allows you to transform any open-source LLM into a "reasoning powerhouse" without labeled data!
+      * RFT utilizes an online “reward” approach—no static labels required.
+      * The RFT model will explore various outputs, and use a Reward Function to score the correctness of those outputs.
+      * Over time, the RFT model learns to generate higher-reward answers using GRPO.
+* This is different from SFT uses static data and often memorizes answers.
+* RFT which is an online method, will learn from rewards and explore new strategies that SFT can not. 
+
+
+![image](https://github.com/user-attachments/assets/7989e2e3-062c-4c44-98f1-ad5187e9fd36)
+
 
 
 # Overview of Post-Training LLM Reinforcement Learning and Optimization Techniques
