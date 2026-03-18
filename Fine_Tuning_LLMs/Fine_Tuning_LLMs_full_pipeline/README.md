@@ -59,11 +59,42 @@
 
 ——-
 
-### 2. Data (level) Driven fine tuning approaches
-        * Based on data preparation and features NOT on parameters. 
-        * SFT Methods
-            1. Non-instructional fine-tuning
-            2. Instruction fine-tuning 
+### 2. Data-Level Fine-Tuning Overview
+* Data-level fine-tuning focuses on the quality, structure, and representation of training data rather than architectural parameter adjustments.
+* Data-Driven vs. Parameter-Centric: While methods like LoRA modify how a model learns, data-driven approaches determine what it learns through rigorous preparation and feature engineering.
+* [paper on non-instructional fine-tuning](https://arxiv.org/html/2409.00096v1)
+
+---
+
+#### Data-Driven Fine-Tuning Approaches
+
+A data-centric strategy prioritizes dataset improvement to enhance performance:
+
+* **Data Preparation:** Systematic cleaning, eliminating duplicates via hashing, and correcting noisy labels using techniques like confident learning.
+* **Data Scaling & Filtering:** Selecting high-quality, representative subsets (e.g., using **FISH Mask** or **Iterative Range Decreasing** algorithms).
+* **Feature Engineering:** Customizing data to align with seasonal variations or domain-specific terminology (e.g., medical or legal texts).
+* **Data Augmentation:** Expanding the dataset with synthetic or modified examples to improve generalization.
+
+---
+
+#### Comparison: Non-Instructional vs. Instruction Fine-Tuning
+* Both are SFT derivatives.
+
+| Feature | Non-Instructional (Traditional SFT) | Instruction Fine-Tuning |
+| --- | --- | --- |
+| **Data Format** | Pairs of specific inputs and outputs (e.g., English text $\rightarrow$ Spanish). | Instruction-response pairs (e.g., "Translate this:" + English $\rightarrow$ Spanish). |
+| **Data Goal** | Enhances domain expertise or performance on a specific, static task. | Aligns model behavior with user intent and human commands. |
+| **Generalization** | May sacrifice general abilities to excel in one narrow area. | Improves cross-task generalization and zero-shot performance. |
+| **Complexity** | Requires larger datasets to learn underlying task patterns. | Uses varied, curated examples to teach "how" to respond to directives. |
+
+---
+
+#### Summary of Differences
+
+* **Non-Instructional Tuning:** Similar to teaching a student a single subject (e.g., radiology) until they are an expert. The task is determined **statically** at training time.
+* **Instruction Tuning:** Similar to teaching a student how to follow various classroom directions. The task is determined **dynamically** at inference time through the prompt.
+
+Would you like me to generate a sample JSONL template for an instruction-tuning dataset based on these principles?
 
 
 
