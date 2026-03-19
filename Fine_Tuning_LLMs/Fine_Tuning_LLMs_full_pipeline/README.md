@@ -1,6 +1,7 @@
 # Fine Tuning LLMs - Full Pipeline
 * Repo by Adam Lang
 * This repo walks through various fine tuning approaches for different use cases.
+* This was inspired by the [Free Code Academy Course - LLM Fine-Tuning](https://www.youtube.com/watch?v=CcrC5zSv1iA&t=26561s) as well as various research papers. 
 
 ---
 # LLM Training Pipeline
@@ -113,17 +114,102 @@ Would you like me to generate a sample JSONL template for an instruction-tuning 
 
 —--
 # Supervised Fine-Tuning (Normal Fine-Tuning)
-
-    1. This is often called “Normal fine-tuning” or “Domain adaptation”.
-        1. Dataset: plain text or company documents
-        2. Use Case: fine-tune LLM to be domain specific such as: medicine, legal, finance, etc.
-        3. Goal: improve model’s understanding, knowledge, grammar, and ability to work in a specific domain’s natural language. 
-        4. Output style: text continuation —> not necessarily  capable of following  instructions though. 
-        5. Meaning: model is learning statistical distribution of text — not question-answering behaviors.
-        6. Example: 
+* This is often called “Normal fine-tuning” or “Domain adaptation”.
+  * Dataset: plain text or company documents
+  * Use Case: fine-tune LLM to be domain specific such as: medicine, legal, finance, etc.
+  * Goal: improve model’s understanding, knowledge, grammar, and ability to work in a specific domain’s natural language.
+  * Output style: text continuation —> not necessarily  capable of following  instructions though.
+  * Meaning: model is learning statistical distribution of text — not question-answering behaviors.
+  * SFT example (normal-fine tuning dataset row):
+    * Tom Brady where Football meets unstoppable passion. Turning hard work, physical ability, and courage into legacy. Playing 20 plus years in the NFL and now teaching football and broadcasting his knowledge on Fox sports. He is not just a legend but the GOAT (greatest of all time).
+    * This is non-instructional fine-tuning
+    * The goal is to predict the next token using SFT only -- goal is DOMAIN specific model
+   
+| Input                                                                 | Output        |
+| --------------------------------------------------------------------- | ------------- |
+| "Tom"                                                                 | "Brady"       |
+| "Tom Brady"                                                           | "---"         |
+| "Tom Brady ---"                                                       | "where"       |
+| "Tom Brady -- where"                                                  | "Football"    |
+| "Tom Brady -- where Football"                                         | "meets"       |
+| "Tom Brady -- where Football meets"                                   | "unstoppable" |
+| "Tom Brady -- where Football meets unstoppable"                       | "passion"     |
+| "Tom Brady -- where Football meets unstoppable passion"               | "Turning"     |
+| "Tom Brady -- where Football meets unstoppable passion. Turning"      | "hard"        |
+| "Tom Brady -- where Football meets unstoppable passion. Turning hard" | "work"        |
+  
 
 —--
 ## Instruction Fine-Tuning
 * This is a sub-class of SFT (supervised fine tuning)
-* Dataset: follows instructions + response format. 
-* Use case: Chatbots, Q&A systems, tutors, coding assistants, customer support, etc.
+* Dataset: Follows instructions + Response format
+* Use Case: Chatbots, Q&A systems, coding assistants, customer support, research asst, etc.
+  * Done on top of the base model domain specific (SFT) training
+
+* **Goal: Teach model to follow HUMAN instructions --> turn into chatbot or AI assistant**
+  * Great for human style conversation
+
+* Output style: direct, helpful, and structured answers -- often with reasoning or explanations 
+
+* Example (IFT dataset row):
+  * Instruction: "Explain what kind of music Nirvana plays in one sentence."
+  * Response: "Nirvana plays a musical style called Grunge that is a mixture of punk, metal, and rock."
+
+* Meaning: model learns to produce direct "Question --> Answer" or "Prompt --> Completion" outputs
+
+* Common datasests: Alpaca, ShareGPT, Dolly, OpenOrca, etc.
+
+---
+## Alignment with Human Feedback (RLHF/DPO/RLAIF)
+* Data: pairs of responses ranked by humans (or AI model annotations simulating human preference) -- ranked as positive, negative, neutral, or using a likert scale (e.g. 0-5)
+* Algorithms:
+	* RLHF -- Reinforcement Learning from Human Feedback (PPO)
+	* DPO -- Direct Preference Optimiation
+	* RLAIF -- Reinforcement Learning from AI feedback
+	* Goal: train model to be polite, safe, helpful, and aligned with human preferences and values such as in medicine specific ways of phrasing and sequence of differential diagnosis.*
+	* Examples:
+		* GPT-4 --> Pretrained GPT + Supervised Fine-Tuning (SFT) + RLHF
+		* Gemini (Google) --> SFT + RLHF + Multimodal alignment
+		* DeepSeek R1 --> Used reinforcement style fine-tune with preference data
+
+
+---
+# Full LLM Pipeline Example
+
+1. Unsupervised pre-training (builds foundation model)
+2. Supervised Fine-Tuning (Domain Adaptation)
+	* KEY: Usually 2 stages: 1) non-instruction fine tune, 2) instruction fine tune*
+	* The difference between the two stages is structure and desired output
+
+--> Llama (base model) 
+
+--> train for Domain adaptation (e.g. Pharma -- not from scratch!)
+* Domain specific data (e.g. PDF, CSV, etc...) --- plain text
+* **Non-instructional data, domain specific context only -- why? Goal is domain adaptation.**
+* Train Llama-13b foundation model
+* Format: Question-Answer format (instruction-response format)
+
+
+3.  Instruction Fine-Tuning (IFT)
+- Question-Answer format with specific instructions
+- **Difference here is INSTRUCTIONAL data** -- follow instructions, learn a process, NOT domain enhancement! 
+
+
+3. Preference based alignment (learning) with human feedback
+* DPO or RLHF
+* Goal: **Align with user preferences** 
+	* This does NOT focus on: 1) Domain adaptation, 2) Instructions
+
+
+
+5. Combo Strategy (Commonly used in Industry)
+	* Step 1: Normal SFT fine-tuning --> Adapt foundation model to specific domain
+	* Step 2: Instruction fine-tuning --> Train model on user question-answer or task instruction data.
+	* (Optional) Step 3: RLHF --> Refine using real user feedback and preference ranking.
+
+
+## Summary
+* If goal is to ADD DOMAIN KNOWLEDGE --> normal fine-tuning (SFT)
+* If goal is to create CHATBOT or ASSISTANT --> instruction fine-tuning (IFT)
+* If BOTH is desired --> 1) Domain fine-tune first --> then, 2) Instruction Fine-Tune
+
