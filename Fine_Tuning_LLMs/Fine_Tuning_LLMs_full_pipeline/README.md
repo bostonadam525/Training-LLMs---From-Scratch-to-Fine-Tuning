@@ -213,3 +213,4 @@ Would you like me to generate a sample JSONL template for an instruction-tuning 
 * If goal is to create CHATBOT or ASSISTANT --> instruction fine-tuning (IFT)
 * If BOTH is desired --> 1) Domain fine-tune first --> then, 2) Instruction Fine-Tune
 
+
