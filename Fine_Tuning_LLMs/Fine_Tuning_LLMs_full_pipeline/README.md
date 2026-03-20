@@ -213,4 +213,203 @@ Would you like me to generate a sample JSONL template for an instruction-tuning 
 * If goal is to create CHATBOT or ASSISTANT --> instruction fine-tuning (IFT)
 * If BOTH is desired --> 1) Domain fine-tune first --> then, 2) Instruction Fine-Tune
 
+---
+# What is meant by Fine-Tuning and why do we need to do this anyways? 
+* Fine-tuning is essentially retraining an already trained model on your own data or domain specific data.
+
+
+## Typical LLM training process
+1. **Unsupervised pre-training or Self-supervised training (e.g. internet data)
+2. **SFT (supervised finetuning)
+	1. Parameter based
+	2. Data based (e.g. structure, features)
+3. **Preference based alignment or training
+	1. Human feedback preferences
+	2. Examples: DPO, ORPO, etc...
+
+
+```
+Transformer ---------------> LLM ---> train/update (weights, biases)
+- Attention + neural network
+```
+---
+## SFT (Supervised Fine-Tuning) re-cap
+1. Parameter
+	1. Full-fine tuning --> retrain ALL model parameters (memory heavy, not done usually)
+	2. Partial fine-tuning --> subset of params trained
+		1. "old technique" --> freeze layers, train other layers
+		2. PEFT (parameter efficient) --> LoRA, QLoRA, etc...
+2. Data 
+	1. Non-instruction data
+		1. plain unstructured text, PDF, docx, etc..
+	2. Instruction data
+		1. Columns: INPUT + OUTPUT
+
+3. Decoder Task
+	1. Always predict NEXT token
+
+### Why is this called SFT (Supervised Fine Tuning)?
+- Pre-training --> model predicts NEXT token from natural text itself (self-supervised, no human labeled data)
+- Instruction fine-tuning --> model predicts NEXT token from HUMAN curated targeted answers (this is SUPERVISED LEARNING in machine learning)
+
+---
+# **Differences between Non-Instruction and Instruction Fine-Tuning?**
+
+* Fine-tuning on plain text (non-instruction fine-tuning) means teaching the model a specific domain language/knowledge. 
+* Purpose: help model learn language, tone, and domain specific terminology
+
+
+## Data example (e.g. unstructured text)
+* Metformin is one of the most widely prescribed oral antihyperglycemic agents. Its primary mechanism of action involves the activation of AMP-activated protein kinase (AMPK), a central metabolic regulator that promotes glucose uptake and fatty acid oxidation while inhibiting hepatic gluconeogenesis.
+* Below is an example of the next token prediction task
+
+```
+
+Input (context)                                             Output (next token/continuation)
+"Metformin is one of the most widely prescribed"            "oral"
+
+"Metformin is one of the most widely prescribe oral"        "antihyperglycemic"
+
+"Metformin is one of the most widely prescribed oral.       "agents"
+antihyperglyciemic"
+```
+
+---
+
+## Why should you NOT just perform Instruction Fine-Tuning?
+* Remember this is ONLY INPUT + OUTPUT pairs. This alone is not enough unless you are training a chatbot or AI assistant.
+* This is where Non-instruction fine-tuning is important as a first step to give the model the **domain knowledge and language on TOP of the base foundation model.**
+* This is why the usual steps are:
+	* 1) non-instruction fine-tuning (give model domain knowledge)
+	* 2) Instruction fine-tuning (teach model how and what to do)
+
+---
+# Instruction Fine-Tuning
+* Teaches model how to follow user instructions.
+* Purpose: 
+	* **Train model to understand instructions, and generate well-structured, relevant answers.**
+* Alpaca is a standard: https://huggingface.co/datasets/tatsu-lab/alpaca/blob/main/README.md#:~:text=Paper:,data%20released%20by%20Self%2DInstruct.
+
+* Relevant papers:
+	* [ How to Design, Create, and Evaluate an Instruction-Tuning Dataset for Large Language Model Training in Health Care: Tutorial From a Clinical Perspective](https://pmc.ncbi.nlm.nih.gov/articles/PMC11962319/)
+	* [# Instruction Tuning for Large Language Models: A Survey](https://arxiv.org/html/2308.10792v5#S1)
+	* [Clustering and Ranking: Diversity-preserved Instruction Selection through Expert-aligned Quality Estimation](https://aclanthology.org/2024.emnlp-main.28.pdf)
+
+* Instruction-Following Dataset
+
+```
+{
+"instruction": "Summarize the following paragraph.",
+"input": "Metforming activates AMP-activated protein kinase (AMPK), which enhances glucose uptake....",
+"output": "Metforming activates AMPK to improve glucose control and reduce gluconeogenesis."
+}
+```
+
+Without Input given to model (Alpaca format)
+
+```
+{"instruction": "List applications of AI in pharma research.",
+"input":"",
+"output": "Target identification, molecular docking, compound screening, and drug design optimization."}
+
+
+{
+"instruction": "Explain mechanism of Metformin."
+"input": "",
+"output": "Metforming activates AMPK and enhances glucose uptake."
+```
+
+## Important distinctions:
+* If instruction uses extra text (summarize/translate/rewrite) --> use input
+* If instruction is self-contained context or dialogue-style conversation data --> keep input as empty string ("")
+
+---
+## Formatting
+* Various instruction tuning formats:
+
+```
+"### Instruction:", "### Input:", "### Response:"  --> Alpaca format
+
+"Instruction:", "Context:", "Answer:"
+
+"USER:" / "ASSISTANT:"
+
+"System:", "User", "Assistant"
+
+"context": "response"
+
+{
+"context": "I'm feeling worthless and can't sleep.",
+"response": "You are not alone, therapy can help you regain balance."
+}
+```
+---
+## But wait -- how will model learn this?
+
+```
+{
+"instruction": "Summarize the following paragraph.",
+"input": "Metforming activates AMP-activated protein kinase (AMPK), which enhances glucose uptake....",
+"output": "Metforming activates AMPK to improve glucose control and reduce gluconeogenesis."
+}
+```
+
+* During fine-tuning, model is given continuous text (not 3 separate columns).
+* Thus, we need to concatenate all 3 parts of each row (above) into one continuous training text.
+* A single training sample for the model would thus look like this:
+
+```
+### Instruction: Summarize the following paragraph: ### Input: Metforming activates AMP-activated protein kinase (AMPK) which increases glucose uptake and reduces hepatic gluconeogenesis. ### Response: Metformin enhances glucose uptake and reduces glucose production by activating AMPK.
+```
+
+---
+# So, Why is Instruction Fine-Tuning Necessary?
+* Pre-trained Foundation models such as Llama, Gemini, GPT, etc..) only learn text continuation.
+* This means the model understands patterns such as:
+	* "If this sentence is written, what word should come next?" (next token prediction)
+
+
+## Example:
+```
+* Input: Metformin is used for
+* Output: the treatment of type 2 diabetes mellitus.
+```
+
+## Thus, the foundation model understands grammar AND knowledge, but it does NOT understand instructions such as:
+
+```
+* "Explain this"
+* "Summarize this"
+* "Write this in bullet points"
+* "Translate this"
+* "Paraphrase this"
+* ....etc...
+```
+
+### Therefore, if you were to ask the raw foundation model: "Write 3 bullet points on Metformin pharmacology"
+
+* It may respond like this: "Write 3 bullet points on Metformin pharmacology is a request..."
+	* meaning it treats the users instruction as text, NOT as a command to follow. 
+
+---
+## Summary
+* To teach a raw foundation model MEANING and PURPOSE of various prompt requests, we thus need to leverage INSTRUCTION FINE-TUNING.
+* IFT involves training the model to understand the user's prompt is an actual instruction, and the model must respond to it, not just predict the next token(s).
+
+* Dataset format:
+
+```
+{"instruction": "Explain mechanism of Metformin.",
+"input": "",
+"output": "Metformin activates AMPK which enhances glucose uptake and inhibits gluconeogenesis."}
+```
+
+* Result --> Now the model will not just predict the next token, it can "understand" what it must do such as:
+	* Summarize information
+	* Answer questions
+	* Compare topics
+	* Explain code
+	* Paraphrase text
+	* ...etc...*
+
 
