@@ -1,7 +1,8 @@
 # Fine Tuning LLMs - Full Pipeline
 * Repo by Adam Lang
 * This repo walks through various fine tuning approaches for different use cases.
-* This was inspired by the [Free Code Academy Course - LLM Fine-Tuning](https://www.youtube.com/watch?v=CcrC5zSv1iA&t=26561s) as well as various research papers. 
+* This was inspired by the [Free Code Academy Course - LLM Fine-Tuning](https://www.youtube.com/watch?v=CcrC5zSv1iA&t=26561s) as well as various research papers.
+* Also see Sebastian Raschka's **Build a Large Language Model (From Scratch)** repo it is an excellent resource: https://github.com/rasbt/LLMs-from-scratch/tree/main
 
 ---
 # LLM Training Pipeline
