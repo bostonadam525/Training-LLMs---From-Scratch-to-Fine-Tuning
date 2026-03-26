@@ -162,6 +162,9 @@ Would you like me to generate a sample JSONL template for an instruction-tuning 
 
 ---
 ## Alignment with Human Feedback (RLHF/DPO/RLAIF)
+* Resources to look at:
+  * Raschka, 2024. How Good Are the Latest Open LLMs? And Is DPO Better Than PPO? Retrieved from: https://magazine.sebastianraschka.com/p/how-good-are-the-latest-open-llms
+  * Raschka, 2023. LLM Training: RLHF and Its Alternatives. Retrieved from: https://magazine.sebastianraschka.com/p/llm-training-rlhf-and-its-alternatives
 * Data: pairs of responses ranked by humans (or AI model annotations simulating human preference) -- ranked as positive, negative, neutral, or using a likert scale (e.g. 0-5)
 * Algorithms:
 	* RLHF -- Reinforcement Learning from Human Feedback (PPO)
