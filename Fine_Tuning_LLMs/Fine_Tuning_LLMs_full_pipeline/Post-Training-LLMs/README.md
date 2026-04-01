@@ -181,14 +181,18 @@ Sources:
 
 The key intuition is:
 
-- ==The more confident the model is in predicting the correct outcome, the lower the loss.==
+- **The more confident the model is in predicting the correct outcome, the lower the loss.**
 - The more confident the model is in predicting the wrong outcome, the higher the loss.
 
 - Source_1: https://medium.com/@chris.p.hughes10/a-brief-overview-of-cross-entropy-loss-523aa56b75d5
 - Source_2: https://cameronrwolfe.substack.com/p/direct-preference-optimization
 - Original DPO paper: Rafailov et al, 2024. Direct Preference Optimization: Your Language Model is Secretly a Reward model. Link: https://arxiv.org/html/2305.18290v3
 
-![[Pasted image 20260401153042.png]]- Beta is very important hyperparameter tuned during training. HIGHER beta --> more important log diff is. 
+https://substackcdn.com/image/fetch/$s_!yQz2!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7107abbb-358e-48d4-a200-64ca6b5d1d72_2050x1092.png<img width="1456" height="776" alt="image" src="https://github.com/user-attachments/assets/cc63ca86-d69e-4848-a5ac-d0b46f50798e" />
+
+
+
+- Beta is very important hyperparameter tuned during training. HIGHER beta --> more important log diff is. 
 - Chosen Reward: Reference model (copy of original model)
 - Rejected Reward: Reparameterization of reward model
 
