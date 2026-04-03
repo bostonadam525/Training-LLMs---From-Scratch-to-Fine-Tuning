@@ -232,4 +232,68 @@ https://substackcdn.com/image/fetch/$s_!yQz2!,f_auto,q_auto:good,fl_progressive:
 	- DPO is doing reward learning which can easily overfit to some shortcut when the preferred answers have shortcuts to learn compared with the non-preferred answers. 
 	- Example: when positive sample always contains a few special words while negative samples DO NOT. 
 
+---
+# Reinforcement Learning for LLMs - Online vs. Offline
+
+1. Online Learning
+	- The model learns by generating new responses in real time --- iteratively collects new responses and their REWARD --> updates its WEIGHTS --> explores new responses as it learns. 
+
+
+
+2. Offline Learning
+- The model learns purely from a pre-collected prompt --> response (-reward) tuple. 
+- No fresh responses generated during the learning process. 
+
+
+## How Online RL Works -- Let Model Explore Better Responses by Itself
+
+Batch of Prompts --> LLM ---> Generate (Prompts, Responses) ---> Reward Function (labels prompts) ---> Prompts, Responses, Rewards ----> UPDATE LLM
+
+
+# Different Choices in Reward Functions -- Online RL
+
+## Option 1: Trained Reward Model
+- 1 post with 2 summaries judged by a human are fed to Reward Model. 
+- The Reward model calculates a Reward `r` for each summary. 
+- The LOSS is calculated based on the rewards + human label, AND is used to update the Reward model. 
+	- Example: If human says "j is better than k" --> design loss function so that higher Reward function for J the better response. 
+
+
+### How is the Trained Reward Model initialized?
+- usually initialized from an existing instruct model --> then trained on large-scale human/machine generated preferences data
+- Works for ANY open-ended generations;
+- Good for improving CHAT tasks and SAFETY tasks
+- Less accurate for correctness-based domains such as: coding, math, function calling, etc.....
+
+
+---
+## Option 2: Verifiable Reward Model
+- Design a verifiable Reward for "Correctness-based" domains. 
+- Examples:
+	- 1) Math: Check if response matches ground truth 
+	- 2) Coding: Running unit tests
+
+---
+### How is Verifiable Reward Model initialized
+- Requires preparation of ground truth for Math, unit tests for coding or sandbox execution environment for multi-turn agentic behavior. 
+- More reliable than Reward model in those domains.
+- Used more often for training reasoning models. 
+
+
+---
+# Two Popular Online RL Algorithms
+- Good resources:
+	- https://cameronrwolfe.substack.com/p/online-rl
+	- https://cameronrwolfe.substack.com/p/ppo-llm
+	- https://cameronrwolfe.substack.com/p/grpo
+
+ - PPO - Proximal Policy Optimization
+	 - Reference Model 
+	 - Reward Model
+	 - Value Model
+	 - Key: Trained models
+- GRPO - Group Relative Policy Optimization 
+	- Reference Model
+	- Reward Model
+	- Key: Frozen Models
 
